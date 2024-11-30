@@ -1,4 +1,7 @@
 # Solving DSA Problems for interviews
+
+### [Notion Page](https://carbonated-stamp-ef4.notion.site/DSA-Notes-3aa83e06cfa74681ad6c1757b8091752?pvs=4)
+
 ### Problems List 
 - [Neetcode's roadmap](https://neetcode.io/roadmap)
 - [Striver SDE sheet](https://takeuforward.org/interviews/strivers-sde-sheet-top-coding-interview-problems)
