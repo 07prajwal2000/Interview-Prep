@@ -1,4 +1,5 @@
 // https://leetcode.com/problems/largest-rectangle-in-histogram/solutions/6468049/javascript-solution-using-monotonic-stac-t2un/
+// https://leetcode.com/problems/maximal-rectangle/description/ - extended problem
 /**
  * @param {number[]} heights
  * @return {number}
