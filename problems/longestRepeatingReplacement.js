@@ -4,32 +4,31 @@
  * @return {number}
  */
 var characterReplacement = function (s, k) {
-  let count = 0;
-  const n = s.length;
-  let i = 0;
-  const map = {};
-  for (let j = 0; j < n; j++) {
-    const c = s[j];
-    let len = j - i + 1;
+  const map = {}, n = s.length;
+  let l = 0, size = 0;
+  for (let r = 0; r < n; r++) {
+    let windowLength = r - l + 1;
+    const char = s[r];
+    map[char] = char in map ? map[char] + 1 : 1;
+    const mostRepeatingCharCount = findMostRepeatingCharCount(map);
 
-    map[c] = c in map ? map[c] + 1 : 1;
-
-    if ((len - getMaxVal(map)) > k) {
-      map[s[i]]--;
-      i++;
+    if ((windowLength - mostRepeatingCharCount) > k) {
+      map[s[l]]--;
+      l++;
     }
-    len = j - i + 1;
-    count = Math.max(count, len);
+
+    windowLength = r - l + 1;
+    size = Math.max(windowLength, size);
   }
-  return count;
+  return size;
 };
 
-function getMaxVal(obj) {
-  let m = 0;
-  for (let key in obj) {
-    m = Math.max(m, obj[key]);
+function findMostRepeatingCharCount(map) {
+  let max = 0;
+  for (let key in map) {
+    max = Math.max(map[key], max);
   }
-  return m;
+  return max;
 }
 
 console.log(characterReplacement("AABABBA", 1));
