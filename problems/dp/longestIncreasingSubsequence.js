@@ -5,6 +5,38 @@
 var lengthOfLIS = function (nums) {
 	const n = nums.length;
 	if (n == 1) return 1;
+	const arr = [];
+
+	for (let i = 0; i < n; i++) {
+		const cur = nums[i];
+		if (arr.length == 0) arr.push(cur);
+		else {
+			const idx = binarySearch(arr, cur);
+			if (idx == arr.length) arr.push(cur);
+			else arr[idx] = cur;
+		}
+	}
+
+	return arr.length;
+};
+
+function binarySearch(arr, ele) {
+	let l = 0,
+		r = arr.length;
+	while (l <= r) {
+		const mid = (l + r) >> 1;
+		if (ele > arr[mid]) {
+			l = mid + 1;
+		} else {
+			r = mid - 1;
+		}
+	}
+	return l;
+}
+
+var lengthOfLIS_DP = function (nums) {
+	const n = nums.length;
+	if (n == 1) return 1;
 	const dp = Array(n)
 		.fill(0)
 		.map(() => Array(n).fill(-1));
@@ -19,3 +51,5 @@ var lengthOfLIS = function (nums) {
 	}
 	return find(n - 1, -1);
 };
+
+console.log(lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]));
