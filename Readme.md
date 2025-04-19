@@ -8,3 +8,5 @@
 - [Striver A2Z sheet](https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2)
 - [Amazon SDE List](https://leetcode.com/discuss/interview-question/488887/amazon-final-interview-questions-sde1)
 ### Hoping to get as much knowledge as possible and able to crack interviews without hassle 🤞.
+
+Also has datastructures folder contains custom data structures I implemented
