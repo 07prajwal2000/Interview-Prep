@@ -3,12 +3,7 @@
  * @return {number}
  */
 var longestConsecutive = function (nums) {
-  const set = new Set();
-  let min = Infinity;
-  for (let n of nums) {
-    min = Math.min(min, n);
-    set.add(n);
-  }
+  const set = new Set(nums);
   let long = 0;
   for (let n of set) {
     let len = 0;
@@ -21,5 +16,3 @@ var longestConsecutive = function (nums) {
   }
   return long;
 };
-
-console.log(longestConsecutive([100,4,200,1,3,2]));

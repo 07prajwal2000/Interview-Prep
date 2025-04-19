@@ -3,39 +3,29 @@
  * @param {number} k
  * @return {number[]}
  */
-/**
- * @param {number[]} nums
- * @param {number} k
- * @return {number[]}
- */
 var topKFrequent = function (nums, k) {
   const map = {};
-  const ans = [];
-  const tracker = Array(nums.length);
-
+  let maxCount = 0;
   for (let num of nums) {
-    const val = num in map ? map[num] + 1 : 1;
-    map[num] = val;
+    map[num] = num in map ? map[num] + 1 : 1;
+    maxCount = Math.max(map[num], maxCount);
   }
-
+  const counterTracker = Array(maxCount + 1);
   for (let key in map) {
     const count = map[key];
-
-    if (tracker[count]) tracker[count].push(key);
-    else tracker[count] = [key];
+    if (counterTracker[count]) {
+      counterTracker[count].push(key);
+    } else {
+      counterTracker[count] = [key];
+    }
   }
-
-  for (let i = tracker.length - 1; i >= 0 && k > 0; i--) {
-    if (!tracker[i]) continue;
-
-    while (k && tracker[i].length) {
-      ans.push(parseInt(tracker[i].pop()));
+  const result = [];
+  for (let i = maxCount; i > 0 && k > 0; i--) {
+    if (!counterTracker[i]) continue;
+    while (counterTracker[i].length > 0 && k > 0) {
+      result.push(parseInt(counterTracker[i].pop()));
       k--;
     }
   }
-
-  return ans;
+  return result;
 };
-
-console.log(topKFrequent([1], 1));
-console.log(topKFrequent([1, 1, 1, 2, 2, 3], 2));
