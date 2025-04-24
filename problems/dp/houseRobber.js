@@ -3,17 +3,19 @@
  * @return {number}
  */
 var rob = function (nums) {
+  let cur = 0, prev = 0, next = 0;
   const n = nums.length;
-  const memo = Array(n + 1).fill(-1);
-  memo[0] = 0;
-  memo[1] = nums[0];
+  // const memo = Array(n + 1).fill(-1);
+  cur = nums[0];
   for (let i = 1; i < n; i++) {
-    memo[i + 1] = Math.max(memo[i], memo[i - 1] + nums[i]);
+    next = Math.max(cur, prev + nums[i]);
+    prev = cur;
+    cur = next;
   }
-  return memo[n];
+  return cur;
 };
 
-function bottomUp(nums) {
+function topDown(nums) {
   const n = nums.length;
   let memo = Array(n).fill(-1);
   function robHouse(i) {
