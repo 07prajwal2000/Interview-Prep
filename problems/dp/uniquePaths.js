@@ -5,9 +5,19 @@
  */
 var uniquePaths = function (m, n) {
   const dp = Array(m + 1);
+  
   for (let i = 0; i <= m; i++) {
     dp[i] = Array(n + 1).fill(0);
+    dp[i][1] = 1;
   }
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    }
+  }
+
+  return dp[m][n];
 
   function calc(i, j) {
     if (i == 1 && j == 1) return 1;
@@ -20,5 +30,3 @@ var uniquePaths = function (m, n) {
   let ans = calc(m, n);
   return ans;
 };
-
-console.log(uniquePaths(3, 7));
