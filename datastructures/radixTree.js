@@ -1,22 +1,56 @@
-/* notes
-key search in list - sorted list of str
-while insert
-  - bin search the list of nodes, if prefix key found, if the key is full match, 
-    - split the str till where it matches
-    - move the remaining part of key to child node, 
-    - repeat the same process above (prefix check, split and all that)
-  - if prefix not found
-    - insert at the end
-    - find best position to place
-    - move rest of the keys to right
-*/
-
-// sorted str list impl (no dups allowed)
-class SortedStringList {
+class RadixTree {
   internalList = [];
 
-  insert(str, meta) {
+  set(str, meta) {
     this._insert(str, meta, this.internalList);
+  }
+
+  get(str) {
+    return this._get(str, this.internalList);
+  }
+
+  delete(str) {
+    return this._delete(str, this.internalList);
+  }
+
+  _delete(key, list) {
+    let left = 0, right = list.length - 1;
+    while (left <= right) {
+      const mid = (left + right) >> 1;
+      const { key: midKey, child } = list[mid];
+      if (key == midKey) {
+        this.shiftToLeft(mid, list, true);
+        return true;
+      }
+      const prefixIndex = this.findPrefixIndex(key, midKey);
+      if (prefixIndex == 0) { // no match
+        if (key > midKey) left = mid + 1;
+        else right = mid - 1;
+      } else {
+        const found = this._delete(key.substring(prefixIndex), child);
+        if (child.length == 0) list.pop();
+        return found;
+      }
+    }
+    return false;
+  }
+
+  _get(str, list) {
+    if (!str) return null;
+    let left = 0, right = list.length - 1;
+    while (left <= right) {
+      const mid = (left + right) >> 1;
+      const { key, meta, child } = list[mid];
+      const prefixIndex = this.findPrefixIndex(key, str);
+      if (key == str) return meta;
+      if (prefixIndex == 0) { // no match
+        if (key > str) right = mid - 1;
+        else left = mid + 1;
+      } else {
+        return this._get(str.substring(prefixIndex), child);
+      }
+    }
+    return null;
   }
 
   _insert(str, meta, list) {
@@ -42,7 +76,7 @@ class SortedStringList {
         // left stays there, right part goes to child including meta and childs
         const temp = list[mid]; // TODO
         const remaining = str.substring(prefixIndex);
-        temp.child.push({key: rightPart ?? remaining, meta: temp.meta, child: []});
+        temp.child.push({ key: rightPart ?? remaining, meta: temp.meta, child: [] });
         let child = temp.child.sort((a, b) => a.key > b.key ? 1 : -1); // TODO: Not optimised
         list[mid] = {
           key: leftPart,
@@ -70,6 +104,13 @@ class SortedStringList {
     for (let i = list.length - 2; i >= fromIndex; i--) {
       list[i + 1] = list[i];
     }
+  }
+
+  shiftToLeft(fromIndex, list, popEnd) {
+    for (let i = fromIndex; i < list.length - 1; i++) {
+      list[i] = list[i + 1];
+    }
+    if (popEnd) list.pop();
   }
 
   findCollisionPosition(str, list) {
@@ -110,7 +151,16 @@ class SortedStringList {
   }
 }
 
-const tree = new SortedStringList();
-tree.insert("abc", "abc");
-tree.insert("abd", "abd");
-tree.insert("abcat", "cat");
+const tree = new RadixTree();
+tree.set("abc", "abc");
+tree.set("abd", "abd");
+console.log("Deleted key: abc", tree.delete("abc"));
+tree.set("abdc", "abdc");
+tree.set("abcat", "cat");
+tree.set("mike", "mike");
+tree.set("rody", "rody");
+tree.set("rob", "rob");
+tree.set("rope", "rope");
+console.log("abc: ", tree.get("abc"));
+console.log("abd: ", tree.get("abd"));
+console.log("rob: ", tree.get("rob"));
