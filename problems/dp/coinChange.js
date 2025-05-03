@@ -4,8 +4,17 @@
  * @return {number}
  */
 var coinChange = function (coins, amount) {
-  const dp = Array(amount + 1).fill(0);
-
+  if (amount == 0) return 0;
+  const dp = Array(amount + 1).fill(1e9);
+  dp[0] = 0;
+  for (let amt = 1; amt <= amount; amt++) {
+    for (let coin of coins) {
+      const change = amt - coin;
+      if (change < 0) continue;
+      dp[amt] = Math.min(dp[change] + 1, dp[amt]);
+    }
+  }
+  return dp[amount] == 1e9 ? -1 : dp[amount];
   function solve(amt) {
     if (amt == 0) return 0;
     if (dp[amt]) return dp[amt];
@@ -24,27 +33,3 @@ var coinChange = function (coins, amount) {
   let ans = solve(amount);
   return ans == 1e9 ? -1 : ans;
 };
-
-function sol2(coins, amount) {
-  const dp = Array(amount + 1).fill(Infinity);
-  dp[0] = 0;
-  for (let coin of coins) {
-    for (let i = coin; i <= amount; i++) {
-      dp[i] = Math.min(dp[i], dp[i - coin] + 1);
-    }
-  }
-  return dp[amount] == Infinity ? -1 : dp[amount];
-}
-
-function sol2(coins, amount) {
-  const dp = Array(amount + 1).fill(Infinity);
-  dp[0] = 0;
-  for (let coin of coins) {
-    for (let i = coin; i <= amount; i++) {
-      dp[i] = Math.min(dp[i], dp[i - coin] + 1);
-    }
-  }
-  return dp[amount] == Infinity ? -1 : dp[amount];
-}
-
-console.log(coinChange([186, 419, 83, 408], 6249));
