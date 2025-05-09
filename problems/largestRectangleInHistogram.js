@@ -5,21 +5,26 @@
  * @return {number}
  */
 var largestRectangleArea = function (heights) {
-  let s = [], n = heights.length;
+  const s = [], n = heights.length;
   let maxArea = 0;
   for (let i = 0; i < n; i++) {
-    let cur = heights[i];
-    while (s.length && s[s.length - 1][1] > cur) {
-      let [idx, ele] = s.pop();
-      let left = s.length ? s[s.length - 1][0] : -1;
-      maxArea = Math.max(maxArea, ele * (i - left - 1));
+    const cur = heights[i];
+    while (s.length && s[s.length - 1][0] > cur) {
+      const [height] = s.pop();
+      // need to take prev ele's index as bcz the area of the cur ele can be calculated till there
+      const len = s.length ? s[s.length - 1][1] : -1;
+      const width = (i - len - 1);
+      const curArea = width * height;
+      maxArea = Math.max(maxArea, curArea);
     }
-    s.push([i, cur]);
+    s.push([cur, i]);
   }
-  while (s.length) {
-    let [idx, ele] = s.pop();
-    let left = s.length ? s[s.length - 1][0] : -1;
-    maxArea = Math.max(maxArea, ele * (n - left - 1));
+  while (s.length) { // if any elements, which are smaller than prev
+    const [height] = s.pop();
+    const len = s.length ? s[s.length - 1][1] : -1;
+    const width = (n - len - 1); // why n, bcz there is no prev small element
+    const curArea = width * height;
+    maxArea = Math.max(maxArea, curArea);
   }
   return maxArea;
 };
