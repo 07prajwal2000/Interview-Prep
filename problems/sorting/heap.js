@@ -1,101 +1,74 @@
-class MinHeap {
-  constructor() {
-    this.length = 3;
-    this._array = Array(this.length);
-    this.i = 0;
+class Heap {
+  comparer;
+
+  constructor(comparer = (a, b) => (a >= b)) {
+    this.arr = [];
+    this.comparer = comparer;
   }
-  static fromArray(arr) {
-    const minHeap = new MinHeap();
-    for (let ele of arr) {
-      minHeap.push(ele);
-    }
-    return minHeap;
-  }
-  size() {
-    return this.i;
-  }
-  peek() {
-    return this._array[0];
-  }
-  pop() {
-    let ele = this._array[0];
-    this._array[0] = this._array[this.i - 1];
-    this.i--;
-    this.reorder(0);
-    return ele;
-  }
-  reorder(index) {
-    if (index < 0 || index > this.i) return;
-    let l = this.getLeftIndex(index);
-    let r = this.getRightIndex(index);
-    if (l <= this.i && this._array[l] < this._array[index]) {
-      this.swapByIndex(l, index);
-      this.reorder(l);
-    } 
-    if (r <= this.i && this._array[r] < this._array[index]) {
-      this.swapByIndex(r, index);
-      this.reorder(r);
+
+  insert(val) {
+    this.arr.push(val);
+    let index = this.arr.length - 1;
+    if (index == 0) return;
+    while (index != 0) {
+      let parentIndex = Math.floor((index - 1) / 2);
+      if (this.comparer(this.arr[parentIndex], this.arr[index])) break;
+      this.swap(index, parentIndex);
+      index = parentIndex;
     }
   }
-  _resize() {
-    if (this.i + 1 >= this.length) {
-      this.length *= 2;
-      const tmp = this._array;
-      this._array = Array(this.length);
-      for (let idx = 0; idx < tmp.length; idx++) {
-        this._array[idx] = tmp[idx];
+
+  delete() {
+    if (this.arr.length === 0) return;
+    const deleted = this.arr[0];
+    this.arr[0] = this.arr[this.arr.length - 1];
+    this.arr.pop();
+    let index = 0;
+    const len = this.arr.length;
+
+    while (true) {
+      const left = index * 2 + 1;
+      const right = index * 2 + 2;
+      let target = index;
+
+      if (left < len && this.comparer(this.arr[left], this.arr[target])) {
+        target = left;
       }
+
+      if (right < len && this.comparer(this.arr[right], this.arr[target])) {
+        target = right;
+      }
+
+      if (target === index) break;
+
+      this.swap(index, target);
+      index = target;
     }
+
+    return deleted;
   }
-  push(num) {
-    // resize mechanism
-    this._resize();
-    this._array[this.i] = num;
-    let ti = this.i;
-    while (ti >= 0 && this.getParent(ti) > this._array[ti]) {
-      this.swapByIndex(this.getParentIndex(ti), ti);
-      ti = this.getParentIndex(ti);
-    }
-    this.i++;
+
+  swap(a, b) {
+    let tmp = this.arr[a];
+    this.arr[a] = this.arr[b];
+    this.arr[b] = tmp;
   }
-  getParentIndex(idx) {
-    return idx >> 1;
+
+  top() {
+    if (this.arr.length == 0) return;
+    return this.arr[0];
   }
-  getLeftIndex(idx) {
-    return (idx * 2) + 1;
-  }
-  getRightIndex(idx) {
-    return (idx * 2) + 2;
-  }
-  getParent(idx) {
-    idx = this.getParentIndex(idx);
-    return this._array[idx];
-  }
-  getLeft(idx) {
-    idx = this.getLeftIndex(idx);
-    if (idx > this.i) return undefined;
-    return this._array[idx];
-  }
-  getRight(idx) {
-    idx = this.getRightIndex(idx);
-    if (idx > this.i) return undefined;
-    return this._array[idx];
-  }
-  swapByIndex(ia, ib) {
-    let tmp = this._array[ia];
-    this._array[ia] = this._array[ib];
-    this._array[ib] = tmp;
+
+  size() {
+    return this.arr.length;
   }
 }
 
-// const minHeap = new MinHeap();
-// minHeap.push(6);
-// minHeap.push(2);
-// minHeap.push(3);
-// minHeap.push(4);
-// minHeap.push(1);
-// minHeap.push(-2);
-const minHeap = MinHeap.fromArray([34, 45, 22, 89, 76]);
-while (minHeap.size()) {
-  console.log(minHeap.pop());
-}
+const heap = new Heap((a, b) => (a > b)); // max heap. for min heap a < b
+// [-1,2,0]
+heap.insert(-1);
+heap.insert(2);
+heap.insert(0);
+console.log(heap.delete());
+console.log(heap.delete());
+console.log(heap.delete());
