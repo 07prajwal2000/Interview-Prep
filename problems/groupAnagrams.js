@@ -1,27 +1,20 @@
-function genArr(s) {
-  const arr = Array(26);
-  arr.fill(0);
-  for (let c of s) {
-    arr[c.charCodeAt(0) - 97]++;
-  }
-  return arr;
-}
-
 /**
-* @param {string[]} strs
-* @return {string[][]}
-*/
+ * @param {string[]} strs
+ * @return {string[][]}
+ */
 var groupAnagrams = function (strs) {
-  const map = {};
-  for (let s of strs) {
-    const arr = genArr(s);
-    if (arr in map) {
-      map[arr].push(s);
-      continue;
+  const map = new Map();
+  for (let str of strs) {
+    const arr = Array(26).fill(0);
+    for (let c of str) {
+      arr[c.charCodeAt(0) - 'a'.charCodeAt(0)]++;
     }
-    map[arr] = [s];
+    const key = arr.join(',');
+    if (map.has(key)) {
+      map.get(key).push(str);
+    } else {
+      map.set(key, [str]);
+    }
   }
-  return Object.values(map);
+  return Array.from(map.values());
 };
-
-console.log(groupAnagrams(["eat","tea","tan","ate","nat","bat"]));
